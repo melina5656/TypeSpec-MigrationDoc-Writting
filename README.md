@@ -1,4 +1,4 @@
-VsCode Markdown Imange Path Setting:
+VsCode Markdown Image Path Setting:
 
 1. Press: `Ctrl+,`
 2. Add Item Value: `**/*` `./images/${unixTime}.png`   
