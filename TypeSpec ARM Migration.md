@@ -1,6 +1,7 @@
 # TypeSpec ARM Migration
+---
 
-### Getting started with TypeSpec migration
+# Getting started with TypeSpec migration
 Getting started with TypeSpec migration
 We have created a swagger to TypeSpec conversion tool to help take on the bulk of the manual conversion labor. It can handle both data-plane and management-plane swaggers. The produced TypeSpec relies on the Azure.Core and Azure.Resource.Manager libraries.
 
@@ -8,44 +9,28 @@ We have created a swagger to TypeSpec conversion tool to help take on the bulk o
 
 ---
 
-## 1. The Spec to be checked out
-In order to Make a comparsion of C# Code generation, we should check out the specification code aligning with that used in SDK repo.
-For example:
-If you are working on a Swagger generated SDK RP, Then you should go find the commit id in the `autorest.md`.
-Otherwise, you should go find the commit id in the `tsp-location.yaml` for a TypeSpec generated SDK RP.
+## 1.Softwares to install
 
-After that ,you should checkout the specific commit id under azure-rest-api-specs Repo directory like:
-```
-git checkout -b new-branch-name xxxx
-```
-`new-branch-name` should be replaced by a user defined name.
-`xxxx` is the commit id you got in the above.
+- Ensure Node.js 18.3 LTS or later is installed.
 
-After all the work done successfully, you get a version of azure-rest-api-specs which the SDK is currently using.
+- Ensure the latest Visual Studio Code is installed.
 
-## 2.Softwares to install
-
-✅Ensure Node.js 18.3 LTS or later is installed.
-
-✅Ensure the latest Visual Studio Code is installed.
-
-
-## 3. Environment Preparation
-✅ ​**DO** install @typespec/compiler
+## 2. Environment Preparation
+- Install @typespec/compiler
 ```
 npm install -g @typespec/compiler
 ```
 
-✅ ​**DO**
-Run at root of azure-rest-api-specs
+- Run at root of azure-rest-api-specs
 ```Terminal window
 npm install 
  ```
 
-✅ ​**DO** name your ARM spec folder with  `{{YourService}}.Management`（e.g：`Storage.Management`）under Resource Provider specification folder like :
+- name your ARM spec folder with  `{{YourService}}.Management`（e.g：`Storage.Management`）under Resource Provider specification folder like :
 `\azure-rest-api-specs\specification\storage\Storage.Management\`
 
 ---
+
 ## 4.Convert a control-plane specification
 
 Run under the directory of step 2 which is `{{YourService}}.Management` for which outputs TypeSpec in this directory. 
@@ -59,67 +44,42 @@ which will cause discrepancies between the generated TypeSpec and original swagg
 ---
 ## 5. Compie the converted TypeSpec into Swagger for comparsion between original Swagger.
 
-Run under the directory of step 2 which is `{{YourService}}.Management`. Ensure it compiles successfully locally.
+- Run under the directory of step 2 which is `{{YourService}}.Management`. Ensure it compiles successfully locally.
 ```
-tsp compile client.tsp 
+tsp compile . 
+```
+- If there is a `client.tsp` in the TSP project, please use:
+```
+tsp compile client.tsp
 ```
 It will ouput a file called `openapi.json` under nder Resource Provider specification folder like :
-`\azure-rest-api-specs\specification\storage\resource-manager\Microsoft.Storage\stable\2024-01-01`
+`\azure-rest-api-specs\specification\storage\resource-manager\Microsoft.Storage\stable\2024-01-01\openapi.json`
 
 `2024-01-01`  corresponds with the version tag in the `readme.md` under `resource-manager` foder like `\azure-rest-api-specs\specification\storage\resource-manager\readme.md`
 
 ---
 
 ## 6. Initial pass through checklist
-✅ ​**DO** configure your tspconfig.yaml. 
-```ts
-emit:
-  - "@azure-tools/typespec-autorest"
-options:
-  "@azure-tools/typespec-autorest":
-    use-read-only-status-schema: true
-    omit-unreachable-types: true
-    emitter-output-dir: "{project-root}/.."
-    azure-resource-provider-folder: "resource-manager"
-    output-file: "{azure-resource-provider-folder}/{service-name}/{version-status}/{version}/openapi.json"
-    examples-dir: "{project-root}/examples"
-    arm-resource-flattening: true
-  "@azure-tools/typespec-csharp":
-    flavor: "azure"
-    namespace: "Azure.ResourceManager.Storage"
-    clear-output-folder: true
-    examples-dir: "{project-root}/examples"
-    package-dir: "Azure.ResourceManager.Storage"
- 
-linter:
-  extends:
-    - "@azure-tools/typespec-azure-rulesets/resource-manager"
+
+- Confirm that the following code exists in main.tsp
 ```
-"@azure-tools/typespec-csharp": part is proboberly missing. It's intended for C# code generation.
-You should Change some keyword for you RP instead of just copy and paste.
-
-
-✅ ​**DO** ensure interface Operations extends Azure.ResourceManager.Operations {} is in main.tsp
-
-```
-
-✅ ​**DO** remove `@useAuth(AadOauth2Auth<["user_impersonation"]>)`
-
 /**
  * The Operations interface for the Storage namespace.
  */
 interface Operations extends Azure.ResourceManager.Operations {}
 ```
 
-✅ ​**DO** make client customizations in a client.tsp file
+- Remove `@useAuth(AadOauth2Auth<["user_impersonation"]>)`
 
-❌ **DON’T** import or use @azure-tools/typespec-client-generator-core in other files aside from client.tsp.
 
-✅ ​**DO** run tsp compile . on your specification and address all warnings
+- Make client customizations in a client.tsp file
 
-✅ ​**DO** use union instead of enum to define Azure extensible enums
+- **DON’T** import or use @azure-tools/typespec-client-generator-core in other files aside from client.tsp.
 
----
+- Run `tsp compile .` or `tsp compile client.tsp` on your specification and address all warnings
+
+- Use union instead of enum to define Azure extensible enums
+
 
 ## 7. Resolving Swagger Breaking Change Violations
 The Swagger Converter will not be able to accurately represent every part of every API in TypeSpec. This document outlines some common changes you might need to make to a converted TypeSpec to make it conform to your existing service API and pass check-in validations.
@@ -139,73 +99,192 @@ It should have some changes for the sorted exsiting swagger, but it should not c
 
 After all the preparation work done above, then we should do swagger comparision work.
 
- 1. Hover on the sorted swagger file and right click, Choose: Select for Compare.
- 2. Hover on the TypeSpec generated swagger file (openapi.json) and right click, Choose: Comapre with Selected.
- 3. Then we get a two window showing the difference between the file we choosed above. we would  show some diffs and how to fix as tutorial in the following content.
+ - Hover on the sorted swagger file and right click, Choose: Select for Compare.
+ - Hover on the TypeSpec generated swagger file (openapi.json) and right click, Choose: Comapre with Selected.
+ - Then we get a two window showing the difference between the file we choosed above. we would  show some diffs and how to fix as tutorial in the following content.
 
 ---
 
-## 8. Diff Fixing
-
-### - Can ignore: Tags Difference and securityDefinitions.description
-![alt text](./images/image.png)
-![alt text](./images/image-2.png)
-### - Can ignore: x-ms-pageable
-![alt text](./images/image-1.png)
-
-### - renaming: "in": "body"
+## 8. Fix the difference between the original swagger and the swagger generated by TSP
+### Common differences and repair methods
+The goal is to ensure that the swagger generated by TSP is consistent with the original swagger
+- Renaming: "in": "body"
 ![alt text](./images/image-3.png)
 
-1. go search the definition of this operation in typespec directory like below:
+  go search the definition of this operation in typespec directory like below:
 ![alt text](./images/image-4.png)
 we got the interface: StorageAccountsOperations
 we got the operation name:checkNameAvailability
-
 And we could add these fix statement in client.tsp:
-`@@clientName(StorageAccountsOperations.checkNameAvailability::parameters.body,
-  "accountName"
-);`
+  ```
+  @@clientName(StorageAccountsOperations.checkNameAvailability::parameters.body,
+    "accountName"
+  );
+  ```
+  At last run: `tsp compile client.tsp`, fix works.
 
-At last run: `tsp compile client.tsp`, fix works.
-
-### - description diff
+- description diff
 ![alt text](./images/image-5.png)
 
-We should fix the description's diff at the bottom of  the source file instead of client.tsp
+  We should fix the description's diff at the bottom of  the source file instead of client.tsp
 
-`@@doc(StorageAccountsOperations.checkNameAvailability::parameters.body,
+  ```
+  @@doc(StorageAccountsOperations.checkNameAvailability::parameters.body,
   "The name of the storage account within the specified resource group. Storage account names must be between 3 and 24 characters in length and use numbers and lower-case letters only."
-);
-`
-At last run: `tsp compile client.tsp`, fix works.
+  );
+  ```
+  At last run: `tsp compile client.tsp`, fix works.
 
+- Response code differences
+  Assuming the following differences appear in the comparison of Swagger
+  - The original swagger:
+  ```ts
+  "responses": {
+          "200": {
+            "description": "Azure operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/PrivateEndpointConnection"
+            }
+          },
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful."
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "../../../../../common-types/resource-management/v5/types.json#/definitions/ErrorResponse"
+            }
+          }
+        },
+  ```
+  - Swagger generated by TSP:
+  ```ts
+    "responses": {
+          "200": {
+            "description": "Azure operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/PrivateEndpointConnection"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "../../../../../common-types/resource-management/v5/types.json#/definitions/ErrorResponse"
+            }
+          }
+        },
+  ```
+  After comparison, it can be found that the 204 response code is missing. We can locate the corresponding TSP code based on the operation ID and perform the following repair operations
+  ```
+  Response = ArmResponse<PrivateEndpointConnection> | NoContentResponse
+  ```
+  `ArmResponse` corresponds to response code 200, `NoContentResponse` corresponds to response code 204.
+  For more information about this section, please refer to [this file](https://github.com/Azure/typespec-azure/blob/main/packages/typespec-azure-resource-manager/lib/responses.tsp).
 
-### - example missing
-![alt text](./images/image-6.png)
+- Missing extended attribute for marking long-running operations
+  ```ts
+    "x-ms-long-running-operation-options": {
+          "final-state-via": "location"
+        },
+    "x-ms-long-running-operation": true
+  ```
+  When comparing two swagger files and the above code is missing, after finding the specified TSP code, When comparing two swagger files and the above code is missing, after finding the corresponding TSP code, specify the value of `LroHeaders`.
+  ```ts
+    createOrUpdate is ArmResourceCreateOrReplaceAsync<
+      Vault,
+      LroHeaders = ArmLroLocationHeader & Azure.Core.Foundations.RetryAfterHeader
+    >;
+  ```
 
-1. go find the example file in the swagger directory like :
-`\azure-rest-api-specs\specification\storage\resource-manager\Microsoft.Storage\stable\2024-01-01\examples\StorageAccountCheckNameAvailability.json`
+- Modification Type
+  If it is necessary to modify the type of certain properties, you can use the `@@alternateType` decorator
+  ```
+  @@alternateType(VaultProperties.tenantId, uuid);
+  ```
 
-2. copy and paste into the typespec directory like `\azure-rest-api-specs\specification\storage\Storage.Management\examples\2024-01-01\StorageAccountCheckNameAvailability.json`
+- Missing format
+  ```ts
+  "AccessPolicyEntry": {
+      "type": "object",
+      "description": "An identity that have access to the key vault.",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The Azure Active Directory tenant ID that should be used for authenticating requests to the key vault."
+        },
+      }
+    },
+  ```
+  ```ts
+  "AccessPolicyEntry": {
+      "type": "object",
+      "description": "An identity that have access to the key vault.",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "description": "The Azure Active Directory tenant ID that should be used for authenticating requests to the key vault."
+        },
+      }
+    },
+  ```
+  You can use `@format` to solve it.
+  Find the corresponding TSP code and add the `@format` decorator above the property where format needs to be added
+  ```ts
+  model AccessPolicyEntry {
+    /**
+    * The Azure Active Directory tenant ID that should be used for authenticating requests to the key vault.
+    */
+    @format("uuid")
+    tenantId: string;
+  }
+  ```
+- Some warnings have appeared
+  In the process of fixing the TSP code, we will see some warnings that should be eliminated as much as possible. To eliminate these warnings, we can use `#suppress` to solve them.
+  Taking the code that just used `@format` as an example, in practical operation, we will find that `@format` will display a warning.
+  Warning message:
+  ```
+  Azure services should not use the `@format` decorator.TypeSpec@azure-tools/typespec-azure-core/no-format
+  ```
+  Based on the warning message, we use `#suppress` to ignore this warning.
+  ```ts
+  model AccessPolicyEntry {
+    /**
+    * The Azure Active Directory tenant ID that should be used for authenticating requests to the key vault.
+    */
+    #suppress "@azure-tools/typespec-azure-core/no-format"
+    @format("uuid")
+    tenantId: string;
+  }
+  ```
+- example missing
+  ![alt text](./images/image-6.png)
 
-3. open exmaple file and add code like below
+  - go find the example file in the swagger directory like :
+  `\azure-rest-api-specs\specification\storage\resource-manager\Microsoft.Storage\stable\2024-01-01\examples\StorageAccountCheckNameAvailability.json`
+
+  - copy and paste into the typespec directory like `\azure-rest-api-specs\specification\storage\Storage.Management\examples\2024-01-01\StorageAccountCheckNameAvailability.json`
+
+  - open exmaple file and add code like below
 
     >OpeationId is just the operationid in swagger or typespec file.
     
     >Title can be adopted from the swagger file.
 
-![alt text](./images/image-7.png)
+    ![alt text](./images/image-7.png)
 
-4. run: `tsp compile client.tsp`, fix works.
-
-### - Can ignore: Response description
+  - run: `tsp compile client.tsp`, fix works.
+### Negligible differences
+- Tags Difference and securityDefinitions.description
+![alt text](./images/image.png)
+![alt text](./images/image-2.png)
+- The value of nextlink in x-ms-pageable
+![alt text](./images/image-1.png)
+- Response description
 ![alt text](./images/image-8.png)
- 
-
-## - Can ignore: Operation tags
+- Operation tags
 ![alt text](./images/image-9.png)
-
-## - Equivalent
+- Equivalent
 ![alt text](./images/image-10.png)
 
 -----
@@ -237,4 +316,31 @@ model StorageTaskReportInstance extends ProxyResource {
 ### How to Fix
 ProxyResource => Azure.ResourceManager.Foundations.ProxyResource
 
-
+# Generate SDK from TSP
+## 1. Initial pass through checklist
+- Configure your tspconfig.yaml. 
+```ts
+emit:
+  - "@azure-tools/typespec-autorest"
+options:
+  "@azure-tools/typespec-autorest":
+    use-read-only-status-schema: true
+    omit-unreachable-types: true
+    emitter-output-dir: "{project-root}/.."
+    azure-resource-provider-folder: "resource-manager"
+    output-file: "{azure-resource-provider-folder}/{service-name}/{version-status}/{version}/openapi.json"
+    examples-dir: "{project-root}/examples"
+    arm-resource-flattening: true
+  "@azure-tools/typespec-csharp":
+    flavor: "azure"
+    namespace: "Azure.ResourceManager.Storage"
+    clear-output-folder: true
+    examples-dir: "{project-root}/examples"
+    package-dir: "Azure.ResourceManager.Storage"
+ 
+linter:
+  extends:
+    - "@azure-tools/typespec-azure-rulesets/resource-manager"
+```
+"@azure-tools/typespec-csharp": part is proboberly missing. It's intended for C# code generation.
+You should Change some keyword for you RP instead of just copy and paste.
