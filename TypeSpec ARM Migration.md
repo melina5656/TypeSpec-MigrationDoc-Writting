@@ -96,11 +96,11 @@ It's a tedious task. So we developed a independent topol.
 
 you should replace to your SwaggerDirectory.
 
-![alt text](images/1743406171146.png)
+  ![alt text](images/1743406171146.png)
 
 4. Wait for a while, the process would finish.
 
-![alt text](images/1743406475649.png)
+  ![alt text](images/1743406475649.png)
 
 5. we got a newly created file `swaggerMerged.json` and it will be used in the following step.
 
