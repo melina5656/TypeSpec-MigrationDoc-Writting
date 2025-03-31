@@ -8,7 +8,7 @@ We have created a swagger to TypeSpec conversion tool to help take on the bulk o
 
 ---
 
-## 1.Softwares to install
+## 1. Softwares to install
 
 - Ensure Node.js 18.3 LTS or later is installed.
 
