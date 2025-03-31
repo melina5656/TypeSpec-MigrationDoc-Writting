@@ -97,7 +97,7 @@ It's a tedious task. So we developed a independent topol.
 
 `Arrange --SortSwagger true --SwaggerDirectory D:\SourceCode\azure-rest-api-specs\specification\storage\resource-manager\Microsoft.Storage\stable\2024-01-01`
 
-you should replace to your SwaggerDirectory.
+you should replace it with your SwaggerDirectory.
 
   ![alt text](images/1743406171146.png)
 
