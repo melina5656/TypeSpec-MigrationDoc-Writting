@@ -131,12 +131,12 @@ This job is to go find all the opeartions/paths of swagger files in the order of
 It's a tedious task. So we developed a independent topol. 
 
 1. Download this [tool](https://github.com/welovej/Arrange/releases/tag/Arrange-V0.1) and extract all.
-2. open `cmd` with the working directory where Arrange.exe lies.
+2. open `cmd` with the working directory where `Arrange.exe` lies.
 3. Run cmd like below:
 
 `Arrange --SortSwagger true --SwaggerDirectory D:\SourceCode\azure-rest-api-specs\specification\storage\resource-manager\Microsoft.Storage\stable\2024-01-01`
 
-you should replace it with your SwaggerDirectory.
+you should replace directory with your own swagger directory.
 
   ![alt text](images/1743406171146.png)
 
