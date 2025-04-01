@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 - [TypeSpec ARM Migration](#typespec-arm-migration)
-- [Getting started with TypeSpec migration](#getting-started-with-typespec-migration)
+  - [Getting started with TypeSpec migration](#getting-started-with-typespec-migration)
   - [1. Softwares to install](#1-softwares-to-install)
   - [2. Environment Preparation](#2-environment-preparation)
   - [3. Convert a control-plane specification](#3-convert-a-control-plane-specification)
@@ -34,7 +34,7 @@
 <!-- /TOC -->
 ---
 
-# Getting started with TypeSpec migration
+## Getting started with TypeSpec migration
 Getting started with TypeSpec migration
 We have created a swagger to TypeSpec conversion tool to help take on the bulk of the manual conversion labor. It can handle both data-plane and management-plane swaggers. The produced TypeSpec relies on the Azure.Core and Azure.Resource.Manager libraries.
 
