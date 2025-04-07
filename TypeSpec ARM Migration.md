@@ -41,7 +41,9 @@
     - [9.1 Initial pass through checklist](#91-initial-pass-through-checklist)
     - [9.2  Prepare `tsp-location.yaml`](#92--prepare-tsp-locationyaml)
     - [9.3 Generate code from typespec](#93-generate-code-from-typespec)
-    - [9.4 Fix SDK differences](#94-fix-sdk-differences)
+    - [9.4 Fix SDK differences and errors](#94-fix-sdk-differences-and-errors)
+      - [client name difference fix](#client-name-difference-fix)
+      - [opeartion id difference: could ignore](#opeartion-id-difference-could-ignore)
 <!-- /TOC -->
 ---
 
@@ -710,4 +712,37 @@ under the path like `\azure-sdk-for-net\sdk\storage\Azure.ResourceManager.Storag
 
 It would generate SDK with TSP you provided.
 
-### 9.4 Fix SDK differences
+### 9.4 Fix SDK differences and errors
+
+we should run like `..\..\..\eng\scripts\Export-API.ps1 storage` to export the api changes. 
+
+In the following part, we will fix some SDK differences or errors during the export api process / dotnet build.
+
+####The type or namespace could not be found
+
+> BlobContainerCollection.cs(52,108): error CS0246: The type or namespace name 'BlobContainerState' could not be found (are you missing a using directive or an assembly reference?)
+
+The error is caused by api compat check.
+
+if we find the `BlobContainerState` in the tsp or swagger file, there dose not exist. 
+If so we should do a search in `autorest.md`, Then we find `ListContainersInclude: BlobContainerState`, we should do a search for `ListContainersInclude` in Tsp.
+
+we should do a coresponding rename in `client.tsp`:
+
+`@@clientName(ListContainersInclude, "BlobContainerState");`
+
+
+
+#### client name difference fix
+![alt text](images/1743991162984.png)
+
+As we can see , the client name is differenct. So we find the definition of `BlobInventoryPolicyData` in typespec.
+
+![alt text](images/1743991216218.png)
+
+And now we could locate the releated property and make cline name fix in `client.tsp` as below：
+`@@clientName(BlobInventoryPolicyProperties.policy, "PolicySchema");`
+
+#### opeartion id difference: could ignore
+![alt text](images/1743991491095.png)
+
