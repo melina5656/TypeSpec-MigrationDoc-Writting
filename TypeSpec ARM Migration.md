@@ -42,6 +42,7 @@
     - [9.2  Prepare `tsp-location.yaml`](#92--prepare-tsp-locationyaml)
     - [9.3 Generate code from typespec](#93-generate-code-from-typespec)
     - [9.4 Fix SDK differences and errors](#94-fix-sdk-differences-and-errors)
+      - [The type or namespace could not be found](#the-type-or-namespace-could-not-be-found)
       - [client name difference fix](#client-name-difference-fix)
       - [opeartion id difference: could ignore](#opeartion-id-difference-could-ignore)
 <!-- /TOC -->
@@ -718,7 +719,7 @@ we should run like `..\..\..\eng\scripts\Export-API.ps1 storage` to export the a
 
 In the following part, we will fix some SDK differences or errors during the export api process / dotnet build.
 
-####The type or namespace could not be found
+#### The type or namespace could not be found
 
 > BlobContainerCollection.cs(52,108): error CS0246: The type or namespace name 'BlobContainerState' could not be found (are you missing a using directive or an assembly reference?)
 
